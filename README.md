@@ -72,6 +72,23 @@ python tools/test_vtsd_api_flow.py --scenario auth-required
 - 未認証セッション時の `AUTH_REQUIRED`（cast/call）
 
 
+### 全API一括テスト（sh）
+```bash
+# call で全API messageType を順に検証
+bash tools/test_vtsd_all_api.sh --mode call
+
+# cast で全API messageType を順に検証
+bash tools/test_vtsd_all_api.sh --mode cast
+
+# 一部だけ実行（例: Authentication を含む messageType）
+bash tools/test_vtsd_all_api.sh --mode call --filter Authentication
+```
+
+`tools/test_vtsd_all_api.sh` は **シェルスクリプト**として実装されており、
+VTS Public API の messageType を全件順次実行して結果を集計します。
+（注: Named Pipe 接続が前提のため、実行は Windows + vtsd 起動環境で行ってください）
+
+
 ## 開発用仮想環境セットアップ
 
 ```bash
