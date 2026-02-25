@@ -71,6 +71,36 @@ python tools/test_vtsd_api_flow.py --scenario auth-required
 - `call APIStateRequest` の `responseMode=data/raw` の差異
 - 未認証セッション時の `AUTH_REQUIRED`（cast/call）
 
+## デモシナリオ実行
+`docs/demo_scenario.md` の手順を実行するデモスクリプトです。
+
+前提:
+- VTube Studio を起動していること
+- 初回認証時は VTube Studio 側でプラグイン許可操作を行うこと
+
+```bash
+# 1. 接続/認証デモ
+python tools/run_demo_scenarios.py --scenario auth
+
+# 2. キャラクターロードデモ
+python tools/run_demo_scenarios.py --scenario model-load
+
+# 3. HotKey実行デモ
+python tools/run_demo_scenarios.py --scenario hotkey --model-name Akari
+
+# 4. キャラクター移動デモ
+python tools/run_demo_scenarios.py --scenario move --model-name Akari
+
+# 1〜4を連続実行
+python tools/run_demo_scenarios.py --scenario all
+```
+
+主なオプション:
+- `--pipe-name`: vtsd の Named Pipe 名（既定 `\\.\pipe\vtsd-demo`）
+- `--vts-port`: VTS WebSocket ポート（既定 `8001`）
+- `--auth-timeout`: 認証承認待機秒数（既定 `30`）
+- `--step-interval`: デモ内の待機秒数（既定 `5`）
+
 
 ### 全API一括テスト（sh）
 ```bash
