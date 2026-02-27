@@ -46,60 +46,47 @@ resp = client.cast("HotkeyTriggerRequest", {"hotkeyID": "abc"})
 print(resp)
 ```
 
-## 疎通確認
+## デモシナリオ実行
+`docs/demo_scenario.md` の手順を実行するデモスクリプトです。
 
-### クイックチェック
+前提:
+- VTube Studio を起動していること
+- 初回認証時は VTube Studio 側でプラグイン許可操作を行うこと
+
 ```bash
-python tools/test_vtsd_pipe.py
+# 1. 接続/認証デモ
+python demo/run_demo_scenarios.py --scenario auth
+
+# 2. キャラクターロードデモ
+python demo/run_demo_scenarios.py --scenario model-load
+
+# 3. HotKey実行デモ
+python demo/run_demo_scenarios.py --scenario hotkey --model-name Akari
+
+# 4. キャラクター移動デモ
+python demo/run_demo_scenarios.py --scenario move --model-name Akari
+
+# 1〜4を連続実行
+python demo/run_demo_scenarios.py --scenario all
 ```
 
-### APIフロー確認（推奨）
-```bash
-# VTS未起動時
-python tools/test_vtsd_api_flow.py --scenario disconnected
-
-# VTS起動・接続済み時
-python tools/test_vtsd_api_flow.py --scenario connected
-
-# VTS起動・未認証セッション時
-python tools/test_vtsd_api_flow.py --scenario auth-required
-```
-
-`tools/test_vtsd_api_flow.py` は以下を確認します。
-- `cast` 未接続時の `accepted=false, reason=VTS_NOT_CONNECTED`
-- `call` 未接続時の `error.code=VTS_NOT_CONNECTED`
-- `call APIStateRequest` の `responseMode=data/raw` の差異
-- 未認証セッション時の `AUTH_REQUIRED`（cast/call）
-
-
-### 全API一括テスト（sh）
-```bash
-# call で全API messageType を順に検証
-bash tools/test_vtsd_all_api.sh --mode call
-
-# cast で全API messageType を順に検証
-bash tools/test_vtsd_all_api.sh --mode cast
-
-# 一部だけ実行（例: Authentication を含む messageType）
-bash tools/test_vtsd_all_api.sh --mode call --filter Authentication
-```
-
-`tools/test_vtsd_all_api.sh` は **シェルスクリプト**として実装されており、
-VTS Public API の messageType を全件順次実行して結果を集計します。
-（注: Named Pipe 接続が前提のため、実行は Windows + vtsd 起動環境で行ってください）
-
+主なオプション:
+- `--pipe-name`: vtsd の Named Pipe 名（既定 `\\.\pipe\vtsd-demo`）
+- `--vts-port`: VTS WebSocket ポート（既定 `8001`）
+- `--auth-timeout`: 認証承認待機秒数（既定 `30`）
+- `--step-interval`: デモ内の待機秒数（既定 `5`）
 
 ## 開発用仮想環境セットアップ
 
 ```bash
 # 仮想環境作成 + 依存インストール
-bash tools/setup_venv.sh
+bash scripts/setup_venv.sh
 
 # 依存インストールを行わず仮想環境だけ作成
-bash tools/setup_venv.sh --no-install
+bash scripts/setup_venv.sh --no-install
 
 # 既定(.venv)を削除
-bash tools/clean_venv.sh
+bash scripts/clean_venv.sh
 ```
 
 オプション:

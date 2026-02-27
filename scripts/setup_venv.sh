@@ -3,9 +3,9 @@ set -euo pipefail
 
 # vtsd 用の仮想環境を作成し、依存をインストールするスクリプト
 # 使い方:
-#   bash tools/setup_venv.sh
-#   bash tools/setup_venv.sh --venv .venv --python python3.11
-#   bash tools/setup_venv.sh --no-install
+#   bash scripts/setup_venv.sh
+#   bash scripts/setup_venv.sh --venv .venv --python python3.11
+#   bash scripts/setup_venv.sh --no-install
 
 VENV_DIR=".venv"
 PYTHON_CMD="python"

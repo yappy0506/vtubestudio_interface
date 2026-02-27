@@ -89,7 +89,11 @@ class VtsClient:
             return False, {"code": "VTS_DISCONNECTED", "message": "Disconnected while waiting response"}
 
         if raw.get("messageType") == "APIError":
+            if message_type == "AuthenticationRequest":
+                self.auth_state = "UNAUTHENTICATED"
             return False, {"code": "VTS_API_ERROR", "message": "VTS returned APIError", "detail": raw}
+
+        self._sync_auth_state_from_response(message_type, raw)
 
         if response_mode == "data":
             return True, raw.get("data")
@@ -212,3 +216,19 @@ class VtsClient:
             if not fut.done():
                 fut.set_exception(VtsDisconnectedError())
         self.pending.clear()
+
+    def _sync_auth_state_from_response(self, message_type: str, raw: dict[str, Any]) -> None:
+        data = raw.get("data")
+        if not isinstance(data, dict):
+            return
+
+        if message_type == "APIStateRequest":
+            current = data.get("currentSessionAuthenticated")
+            if isinstance(current, bool):
+                self.auth_state = "AUTHENTICATED" if current else "UNAUTHENTICATED"
+            return
+
+        if message_type == "AuthenticationRequest":
+            authenticated = data.get("authenticated")
+            if isinstance(authenticated, bool):
+                self.auth_state = "AUTHENTICATED" if authenticated else "UNAUTHENTICATED"

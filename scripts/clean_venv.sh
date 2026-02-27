@@ -3,8 +3,8 @@ set -euo pipefail
 
 # vtsd 用の仮想環境を削除するスクリプト
 # 使い方:
-#   bash tools/clean_venv.sh
-#   bash tools/clean_venv.sh --venv .venv
+#   bash scripts/clean_venv.sh
+#   bash scripts/clean_venv.sh --venv .venv
 
 VENV_DIR=".venv"
 
